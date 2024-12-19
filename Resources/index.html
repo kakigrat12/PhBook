@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Телефонная книга</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Телефонная книга</h2>
+
+    <!-- Форма добавления/поиска пользователей -->
+    <form id="userForm">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="name">Имя</label>
+                <input type="text" class="form-control" id="name" placeholder="Имя">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="surname">Фамилия</label>
+                <input type="text" class="form-control" id="surname" placeholder="Фамилия">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="otch">Отчество</label>
+                <input type="text" class="form-control" id="otch" placeholder="Отчество">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="street">Улица</label>
+                <input type="text" class="form-control" id="street" placeholder="Улица">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="house">Дом</label>
+                <input type="text" class="form-control" id="house" placeholder="Дом">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="corp">Корпус</label>
+                <input type="text" class="form-control" id="corp" placeholder="Корпус">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="apart">Квартира</label>
+                <input type="text" class="form-control" id="apart" placeholder="Квартира">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="tel">Телефон</label>
+                <input type="text" class="form-control" id="tel" placeholder="Телефон">
+            </div>
+        </div>
+        <button type="button" class="btn btn-success" onclick="addUser()">Добавить</button>
+        <button type="button" class="btn btn-primary" onclick="searchUsers()">Найти</button>
+    </form>
+
+    <!-- Таблица результатов поиска -->
+    <h3 class="mt-4">Результаты поиска</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Отчество</th>
+            <th>Улица</th>
+            <th>Дом</th>
+            <th>Корпус</th>
+            <th>Квартира</th>
+            <th>Телефон</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody id="userTable">
+        <!-- Данные пользователей будут добавляться сюда -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Модальное окно для редактирования пользователя -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Редактировать пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="editName">Имя</label>
+                            <input type="text" class="form-control" id="editName">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="editSurname">Фамилия</label>
+                            <input type="text" class="form-control" id="editSurname">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="editOtch">Отчество</label>
+                            <input type="text" class="form-control" id="editOtch">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="editStreet">Улица</label>
+                            <input type="text" class="form-control" id="editStreet">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="editHouse">Дом</label>
+                            <input type="text" class="form-control" id="editHouse">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="editCorp">Корпус</label>
+                            <input type="text" class="form-control" id="editCorp">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="editApart">Квартира</label>
+                            <input type="text" class="form-control" id="editApart">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="editTel">Телефон</label>
+                            <input type="text" class="form-control" id="editTel">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Функция для добавления пользователя
+    function addUser() {
+        const userData = {
+            name: $('#name').val(),
+            surname: $('#surname').val(),
+            otch: $('#otch').val(),
+            street: $('#street').val(),
+            house: $('#house').val(),
+            corp: $('#corp').val(),
+            apart: $('#apart').val(),
+            tel: $('#tel').val()
+        };
+        $.ajax({
+            url: '/api/users/add', // Укажите актуальный эндпоинт
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
+            success: function(response) {
+                alert("Пользователь добавлен!");
+                searchUsers(); // Обновить таблицу с результатами поиска
+            }
+        });
+    }
+
+    // Функция для поиска пользователей
+    function searchUsers() {
+        const filters = {
+            name: $('#name').val(),
+            surname: $('#surname').val(),
+            otch: $('#otch').val(),
+            street: $('#street').val(),
+            house: $('#house').val(),
+            corp: $('#corp').val(),
+            apart: $('#apart').val(),
+            tel: $('#tel').val()
+        };
+
+        // Убираем пустые значения из фильтров
+        const activeFilters = {};
+        for (const key in filters) {
+            if (filters[key]) {
+                activeFilters[key] = filters[key];
+            }
+        }
+
+        $.ajax({
+            url: 'http://localhost:5243/api/PhoneBook/GetContacts', // Обновленный эндпоинт
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ filters: activeFilters }), // Формат запроса, согласно `GetContactsRequest`
+            success: function(response) {
+                const users = response.contacts; // Получение списка контактов из ответа
+                $('#userTable').empty();
+                users.forEach(user => {
+                    $('#userTable').append(`
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.surname}</td>
+                        <td>${user.otch}</td>
+                        <td>${user.street}</td>
+                        <td>${user.house}</td>
+                        <td>${user.corp}</td>
+                        <td>${user.apart}</td>
+                        <td>${user.tel}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id})">Изменить</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Удалить</button>
+                        </td>
+                    </tr>
+                `);
+                });
+            },
+            error: function(error) {
+                console.error("Ошибка при выполнении поиска:", error);
+                alert("Произошла ошибка при выполнении поиска. Проверьте консоль для деталей.");
+            }
+        });
+    }
+
+    // Функция для редактирования пользователя
+    function editUser(userId) {
+        $.ajax({
+            url: `/api/users/${userId}`,
+            type: 'GET',
+            success: function(user) {
+                $('#editUserId').val(user.id);
+                $('#editName').val(user.name);
+                $('#editSurname').val(user.surname);
+                $('#editOtch').val(user.otch);
+                $('#editStreet').val(user.street);
+                $('#editHouse').val(user.house);
+                $('#editCorp').val(user.corp);
+                $('#editApart').val(user.apart);
+                $('#editTel').val(user.tel);
+                $('#editUserModal').modal('show');
+            }
+        });
+    }
+
+    // Функция для сохранения изменений пользователя
+    function saveUser() {
+        const userId = $('#editUserId').val();
+        const updatedData = {
+            name: $('#editName').val(),
+            surname: $('#editSurname').val(),
+            otch: $('#editOtch').val(),
+            street: $('#editStreet').val(),
+            house: $('#editHouse').val(),
+            corp: $('#editCorp').val(),
+            apart: $('#editApart').val(),
+            tel: $('#editTel').val()
+        };
+        $.ajax({
+            url: `/api/users/${userId}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function() {
+                $('#editUserModal').modal('hide');
+                alert("Изменения сохранены!");
+                searchUsers(); // Обновить таблицу с результатами поиска
+            }
+        });
+    }
+
+    // Функция для удаления пользователя
+    function deleteUser(userId) {
+        if (confirm("Вы уверены, что хотите удалить этого пользователя?")) {
+            $.ajax({
+                url: `/api/users/${userId}`,
+                type: 'DELETE',
+                success: function() {
+                    alert("Пользователь удален!");
+                    searchUsers(); // Обновить таблицу с результатами поиска
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>
