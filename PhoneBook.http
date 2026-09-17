@@ -1,6 +1,12 @@
 @PhoneBook_HostAddress = http://localhost:5243
 
-GET {{PhoneBook_HostAddress}}/weatherforecast/
-Accept: application/json
+### Get Contacts
+POST {{PhoneBook_HostAddress}}/api/PhoneBook/GetContacts
+Content-Type: application/json
 
-###
+{
+}
+
+### Delete Contact
+GET {{PhoneBook_HostAddress}}/api/PhoneBook/DeleteContact?id=1
+Accept: application/json
