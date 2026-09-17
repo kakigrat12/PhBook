@@ -29,7 +29,7 @@ public static class Constants
         {
             public const string Name = "streets";
             public const string Field = "street";
-            public const string FieldInMain = "surname_id";
+            public const string FieldInMain = "street_id";
         }
 
         public static string GetField(string tableName)
