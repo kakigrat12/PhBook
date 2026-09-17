@@ -10,7 +10,6 @@ public interface IPhoneBookRepository
     public Task DeleteFromTable(string tableName, int id);
     public Task<IEnumerable<ChildTableItem>> GetLikeFromTable(string tableName, string value);
     
-    public Task<int> AddContact(AddOrUpdateContactRequest request);
     public Task<int> AddOrUpdateContact(AddOrUpdateContactRequest request);
     public Task DeleteContact(int id);
     public Task<IEnumerable<ContactItem>> GetContacts(GetContactsRequest request);

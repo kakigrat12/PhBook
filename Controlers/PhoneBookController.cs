@@ -24,7 +24,7 @@ public class PhoneBookController(IPhoneBookService phoneBookService) : Controlle
     [HttpPost("DeleteFromTable")]
     [ProducesResponseType(typeof(DeleteFromTableResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
-    public async Task<IActionResult> AddOrUpdateToTable([FromBody] DeleteFromTableRequest request)
+    public async Task<IActionResult> DeleteFromTable([FromBody] DeleteFromTableRequest request)
     {
         var response = await phoneBookService.DeleteFromTable(request);
         return response is DeleteFromTableResponse 

@@ -85,10 +85,7 @@ public class PhoneBookRepository(IConfiguration configuration) : IPhoneBookRepos
         }
     }
 
-    public Task<int> AddContact(AddOrUpdateContactRequest request)
-    {
-        throw new NotImplementedException();
-    }
+
 
     private class IdSourcePair
     {
@@ -162,30 +159,9 @@ public class PhoneBookRepository(IConfiguration configuration) : IPhoneBookRepos
             parameters.Add("@Id", id);
 
             await db.ExecuteAsync(sqlBuilder.ToString(), parameters);
-
-            //await DeleteFromTableWithoutLink(GetTableNames());
         }
     }
 
-    public async Task DeleteFromTableWithoutLink(IEnumerable<string> tableNames)
-    {
-        using (IDbConnection db = GetConnection())
-        {
-            var sqlBuilder = new StringBuilder();
-
-            foreach (var tableName in tableNames)
-            {
-                var mainFieldName = GetFieldInMain(tableName);
-                string sql = $"""
-                              DELETE FROM public."{tableName}"
-                              WHERE id NOT IN (SELECT @mainFieldName FROM main);
-                              """;
-                var parameters = new DynamicParameters();
-                parameters.Add("@mainFieldName", mainFieldName);
-                await db.ExecuteAsync(sql, parameters);
-            }
-        }
-    }
 
     public async Task<IEnumerable<ContactItem>> GetContacts(GetContactsRequest request)
     {
